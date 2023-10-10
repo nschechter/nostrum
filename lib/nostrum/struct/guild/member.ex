@@ -29,6 +29,7 @@ defmodule Nostrum.Struct.Guild.Member do
 
   defstruct [
     :user_id,
+    :global_name,
     :nick,
     :roles,
     :joined_at,
@@ -50,6 +51,9 @@ defmodule Nostrum.Struct.Guild.Member do
   object, use `Nostrum.Cache.UserCache`.
   """
   @type user_id :: User.id() | nil
+
+  @typedoc "The user's global name in Discord"
+  @type global_name :: String.t() | nil
 
   @typedoc "The nickname of the member"
   @type nick :: String.t() | nil
@@ -95,6 +99,7 @@ defmodule Nostrum.Struct.Guild.Member do
 
   @type t :: %__MODULE__{
           user_id: user_id,
+          global_name: global_name,
           nick: nick,
           roles: roles,
           joined_at: joined_at,
@@ -236,6 +241,7 @@ defmodule Nostrum.Struct.Guild.Member do
       |> Map.update(:communication_disabled_until, nil, &Util.maybe_to_datetime/1)
       |> Map.update(:premium_since, nil, &Util.maybe_to_datetime/1)
       |> Map.update(:joined_at, nil, &Util.maybe_to_unixtime/1)
+      |> Map.put(:global_name, Util.cast(map[:user][:global_name], Snowflake))
       |> Map.put(:user_id, Util.cast(map[:user][:id], Snowflake))
 
     struct(__MODULE__, new)
